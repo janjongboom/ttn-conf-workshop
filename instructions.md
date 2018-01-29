@@ -8,7 +8,7 @@ On your computer:
 
 1. Install a recent version of [node.js](https://nodejs.org) (6.x or higher).
 1. Install Python 2.7.
-1. Download the software pack for this workshop from [here]() - and unpack in a convenient location.
+1. Download the software pack for this workshop from [here](https://github.com/janjongboom/ttn-conf-workshop/archive/master.zip) - and unpack in a convenient location.
 
 **Windows**
 
