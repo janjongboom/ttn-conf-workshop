@@ -36,6 +36,7 @@ Grab:
 
 The Grove sensors have four wires. Yellow = data line, white = another data line, red = power, black = ground. In this workshop we'll only use yellow, red and black. We'll use the jumper wires to connect the sensor to the board (because we don't have Grove base shields).
 
+1. We don't use the white wire.
 1. Take the jumper wires and connect them to the holes matching yellow, black and red.
 1. Plug the jumper wires into the dev board as follows:
     * Temperature sensor yellow -> GPIO2
@@ -44,6 +45,7 @@ The Grove sensors have four wires. Yellow = data line, white = another data line
     * Moisture sensor yellow -> WAKE
     * Moisture sensor red -> 3V3
     * Moisture sensor black -> GND
+1. **Double-check your connections. Red -> 3V3, Black -> GND. If you don't check this properly you might blow up the sensor!**
 1. Now connect the board to your computer using a micro-USB cable.
 
 ## 1. A simple application
@@ -84,7 +86,7 @@ Now let's build a simple application which reads the sensor data and prints it t
 
     int main() {
         while (true) {
-            printf("Moisture is %.3f, temperature is %.2f\n", moisture.read(), read_temperature());
+            printf("Moisture is %.3f, temperature is %.2f\r\n", moisture.read(), read_temperature());
 
             // Over 5% moisture, turn LED on
             led1 = moisture.read() > 0.05f;
@@ -157,7 +159,14 @@ You can log in with:
 * Username: `arm-ttn-conference`
 * Password: `omgfota1`
 
-Your device should already be configured here. Find it and switch to the device tab. Please don't remove or change any devices, everyone uses a shared account.
+Then:
+
+1. Click on *Applications*.
+1. Select *fota-test*.
+1. Click *Devices*.
+1. Find your device (through MAC address, printed on the module), and click on it.
+
+**Note:** Please don't remove, change or add any devices, everyone uses a shared account.
 
 ### Cloning the repository
 

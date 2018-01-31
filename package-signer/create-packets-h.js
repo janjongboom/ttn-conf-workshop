@@ -15,7 +15,7 @@ const binaryPath = Path.resolve(process.argv[2]);
 const tempFilePath = Path.join(__dirname, 'temp.bin');
 
 // now we need to create a signature...
-let signature = execSync(`openssl dgst -sha256 -sign ${Path.join(__dirname, 'certs', 'update.key')} ${binaryPath}`);
+let signature = execSync(`openssl dgst -sha256 -sign "${Path.join(__dirname, 'certs', 'update.key')}" "${binaryPath}"`);
 console.log('Signed signature is', signature.toString('hex'));
 
 let sigLength = Buffer.from([ signature.length ]);
@@ -31,7 +31,7 @@ else if (signature.length === 71) {
 fs.writeFileSync(tempFilePath, Buffer.concat([ sigLength, signature, manufacturerUUID, deviceClassUUID, isDiffBuffer, fs.readFileSync(binaryPath) ]));
 
 // Invoke encode_file.py to make packets...
-const infile = execSync('python ' + Path.join(__dirname, 'encode_file.py') + ' ' + tempFilePath + ' 204 20').toString('utf-8').split('\n');
+const infile = execSync('python "' + Path.join(__dirname, 'encode_file.py') + '" "' + tempFilePath + '" 204 20').toString('utf-8').split('\n');
 
 // calculate CRC64 hash
 const hash = crc64(fs.readFileSync(tempFilePath));

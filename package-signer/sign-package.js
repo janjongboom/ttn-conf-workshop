@@ -14,7 +14,7 @@ const binaryPath = Path.resolve(process.argv[2]);
 const tempFilePath = Path.join(__dirname, 'temp.bin');
 
 // now we need to create a signature...
-let signature = execSync(`openssl dgst -sha256 -sign ${Path.join(__dirname, 'certs', 'update.key')} ${binaryPath}`);
+let signature = execSync(`openssl dgst -sha256 -sign "${Path.join(__dirname, 'certs', 'update.key')}" "${binaryPath}"`);
 console.error('Signed signature is', signature.toString('hex'));
 
 let sigLength = Buffer.from([ signature.length ]);

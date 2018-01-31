@@ -22,8 +22,8 @@ fs.mkdirSync(Path.join(__dirname, 'certs'));
 
 console.log('Creating keypair');
 
-execSync(`openssl ecparam -genkey -name prime256v1 -out ${Path.join(certsFolder, 'update.key')}`)
-execSync(`openssl ec -in ${Path.join(certsFolder, 'update.key')} -pubout > ${Path.join(certsFolder, 'update.pub')}`);
+execSync(`openssl ecparam -genkey -name prime256v1 -out "${Path.join(certsFolder, 'update.key')}"`)
+execSync(`openssl ec -in "${Path.join(certsFolder, 'update.key')}" -pubout > "${Path.join(certsFolder, 'update.pub')}"`);
 
 let pubKey = fs.readFileSync(Path.join(certsFolder, 'update.pub'), 'utf-8');
 pubKey = pubKey.split('\n');
