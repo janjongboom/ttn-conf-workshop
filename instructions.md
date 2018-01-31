@@ -180,10 +180,17 @@ Now we need to generate a certificate, that we can use to verify updates.
 1. Open a terminal (or command prompt).
 1. Navigate to the `package-signer` directory (in the software package for this workshop).
 1. Then run:
-    * Windows:
+    * Windows (cmd.exe):
 
         ```
         $ SET PATH=%PATH%;C:\OpenSSL-Win32\bin
+        $ node generate-keys.js organization.com your-device-model
+        ```
+
+    * Windows (Powershell):
+
+        ```
+        $ $env:Path += ";C:\OpenSSL-Win32\bin"
         $ node generate-keys.js organization.com your-device-model
         ```
 
@@ -243,7 +250,7 @@ Firmware updates have a very significant effect on the network, so we are not go
     $ node create-packets-h.js xdot-l151cc-blinky_application.bin
     ```
 
-    Note on Windows: run `SET PATH=%PATH%;C:\OpenSSL-Win32\bin` first.
+    Note on Windows: run `SET PATH=%PATH%;C:\OpenSSL-Win32\bin` (cmd.exe) or `$env:Path += ";C:\OpenSSL-Win32\bin"` (PowerShell) first.
 
 1. This should output something like this:
 
