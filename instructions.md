@@ -7,7 +7,7 @@ We need to install a few pieces of software that we'll be using.
 On your computer:
 
 1. Install a recent version of [node.js](https://nodejs.org) (6.x or higher).
-1. Install Python 2.7.
+1. Install [Python 2.7](https://www.python.org/download/releases/2.7/).
 1. Download the software pack for this workshop from [here](https://github.com/janjongboom/ttn-conf-workshop/archive/master.zip) - and unpack in a convenient location.
 
 **Windows**
@@ -41,7 +41,7 @@ The Grove sensors have four wires. Yellow = data line, white = another data line
     * Temperature sensor yellow -> GPIO2
     * Temperature sensor red -> 3V3
     * Temperature sensor black -> GND
-    * Moisture sensor yellow -> SPI_MOSI
+    * Moisture sensor yellow -> WAKE
     * Moisture sensor red -> 3V3
     * Moisture sensor black -> GND
 1. Now connect the board to your computer using a micro-USB cable.
@@ -64,7 +64,7 @@ Now let's build a simple application which reads the sensor data and prints it t
     DigitalOut led1(LED1);
 
     // For an overview of all the pins, see https://os.mbed.com/platforms/L-TEK-FF1705/
-    AnalogIn moisture(PB_15);
+    AnalogIn moisture(PA_0);
     AnalogIn thermistor(GPIO2);
 
     float read_temperature() {
@@ -74,10 +74,10 @@ Now let's build a simple application which reads the sensor data and prints it t
         a = thermistor.read_u16(); /* Read analog value */
 
         /* Calculate the resistance of the thermistor from analog votage read. */
-        resistance= (float) 10000.0 * ((65536.0 / a) - 1.0);
+        resistance = (float) 10000.0 * ((65536.0 / a) - 1.0);
 
         /* Convert the resistance to temperature using Steinhart's Hart equation */
-        temperature=(1/((log(resistance/10000.0)/beta) + (1.0/298.15)))-273.15;
+        temperature = (1/((log(resistance/10000.0)/beta) + (1.0/298.15)))-273.15;
 
         return temperature;
     }
@@ -157,14 +157,14 @@ You can log in with:
 * Username: `arm-ttn-conference`
 * Password: `omgfota1`
 
-...
+Your device should already be configured here. Find it and switch to the device tab. Please don't remove or change any devices, everyone uses a shared account.
 
 ### Cloning the repository
 
 We have set up a repository which contains all the bits needed for a firmware update. It's already configured with the right credentials to talk to the special instance of TTN. Let's build this application in the online compiler.
 
 1. In the Online Compiler, click *Import > Click here to import from URL*.
-1. Enter `https://github.com/armmbed/lorawan-fota-demo` and click *Import*.
+1. Enter `https://github.com/janjongboom/ttn-conference-workshop` and click *Import*.
 
 Now we need to generate a certificate, that we can use to verify updates.
 
@@ -187,8 +187,39 @@ Now we need to generate a certificate, that we can use to verify updates.
 1. This generates your public / private key (see certs/ directory), and the `UpdateCerts.h` file, which contains the public key and the UUIDs for your device class.
 1. Copy the content of `UpdateCerts.h`.
 1. Create a new file in the online compiler (named `UpdateCerts.h`) and add the content.
+1. Hit *Compile* again and flash.
+1. Your device should show as registered in the TTN console, and you should see data from the sensors coming through.
 
-## 4. Testing without breaking TTN
+## 4. Multicast
+
+Your devices can now be addressed through multicast. We're going to set up a multicast group and send some data to multiple devices at the same time. *Do this in sync with one of your neighbors!*.
+
+1. Go to the TTN console page, and find your device.
+1. Under `Downlink`, set port to *200*, and content to:
+
+    ```
+    02 01 51 0D 00 26 36 19 BE 59 F9 81 75 84 2F 53 29 C4 9F CF DB 71 00 00 E8 03 00 00
+    ```
+
+1. Click *Send*.
+1. Your device should receive multicast credentials (see serial console).
+
+Now, let's make the device switch to multicast:
+
+1. Under `Downlink`, set port to *200*, and content to:
+
+    ```
+    04 01 2B 00 50 FF D2 AD 84 06
+    ```
+
+1. Click *Send*.
+1. After ~45 seconds the device switches to multicast mode (see serial console).
+
+When the device (multiple devices) have switched to multicast, go to the `multicast-1` device and schedule a (**!!!non-confirmed!!!!**) downlink message. All devices in the group receive it at the same time!
+
+After 32 seconds of no messages on Class C the device will return back to Class A mode.
+
+## 5. Testing an update (without breaking TTN)
 
 Firmware updates have a very significant effect on the network, so we are not going to run 25 different updates. But we can simulate one.
 
@@ -221,24 +252,11 @@ Firmware updates have a very significant effect on the network, so we are not go
 
 On the serial port you'll see the fragmentation session, then CRC64 validation, and then flashing the new binary.
 
-## 5. Building locally and binary diffs
+## 6. And now for real
 
-...
+Let's do a full cycle, and perform a multicast delta firmware update to all devices at the same time.
 
-## Install
+1. Flash `base-img.bin` to your development board.
+1. Make sure the device is registered in the TTN console.
 
-* A recent version of Node.js
-* OpenSSL on windows (e)
-* OpenSSL on Linux (`sudo apt install openssl`)
-
-## Create public/private key pair
-
-* Windows:
-
-    ```
-    $ SET PATH=%PATH%;C:\OpenSSL-Win32\bin
-    ```
-
-    ```
-    $ c:\Users\janjon01\Desktop\package-signer>SET PATH=%PATH%;z:\ttn-workshop-resources\jojodiff\win32
-    ```
+Now pay attention to Jan!
