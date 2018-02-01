@@ -272,7 +272,7 @@ On the serial port you'll see the fragmentation session, then CRC64 validation, 
 
 Let's do a full cycle, and perform a multicast delta firmware update to all devices at the same time.
 
-1. Flash `base-img.bin` to your development board.
+1. Flash `base_img.bin` to your development board.
 1. Make sure the device is registered in the TTN console.
 
 Now pay attention to Jan!
