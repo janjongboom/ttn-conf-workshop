@@ -88,8 +88,8 @@ Now let's build a simple application which reads the sensor data and prints it t
         while (true) {
             printf("Moisture is %.3f, temperature is %.2f\r\n", moisture.read(), read_temperature());
 
-            // Over 5% moisture, turn LED on
-            led1 = moisture.read() > 0.05f;
+            // Over 2% moisture, turn LED on
+            led1 = moisture.read() > 0.02f;
 
             wait(0.5);
         }
