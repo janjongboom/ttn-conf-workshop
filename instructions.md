@@ -174,8 +174,14 @@ We have set up a repository which contains all the bits needed for a firmware up
 
 1. In the Online Compiler, click *Import > Click here to import from URL*.
 1. Enter `https://github.com/janjongboom/ttn-conference-workshop` and click *Import*.
+1. Hit *Compile* again and flash.
+1. Your device should show as registered in the TTN console, and you should see data from the sensors coming through.
 
-Now we need to generate a certificate, that we can use to verify updates.
+**Note:** If your device does not join, verify that the Device EUI (printed on startup) is correctly registered in the TTN console.
+
+#### 3a. OPTIONAL! Generate your own certificate
+
+This application uses a pre-generated update certificate to verify updates. This is insecure. The private key is also held in the repository. If you want to create your own certificate, follow the following steps.
 
 1. Open a terminal (or command prompt).
 1. Navigate to the `package-signer` directory (in the software package for this workshop).
@@ -203,8 +209,6 @@ Now we need to generate a certificate, that we can use to verify updates.
 1. This generates your public / private key (see certs/ directory), and the `UpdateCerts.h` file, which contains the public key and the UUIDs for your device class.
 1. Copy the content of `UpdateCerts.h`.
 1. Create a new file in the online compiler (named `UpdateCerts.h`) and add the content.
-1. Hit *Compile* again and flash.
-1. Your device should show as registered in the TTN console, and you should see data from the sensors coming through.
 
 ## 4. Multicast
 
@@ -241,9 +245,18 @@ Firmware updates have a very significant effect on the network, so we are not go
 
 1. In the Online Compiler, click *Import > Click here to import from URL*.
 1. Enter `https://github.com/janjongboom/lorawan-fragmentation-in-flash` and click *Import*.
+1. Hit *Compile* again and flash.
+1. Open a serial monitor and see the fragments being applied, the signature verified, and the update executing through the bootloader.
+1. Blinky should run when the update is complete.
+1. Unplug and re-plug in your device to verify that it's actually flashed the new app.
+
+### 5a. OPTIONAL! Sign your own copy of blinky
+
+Blinky is signed with a private key that is public. You can also sign it with your own private key (see 3a).
+
 1. Go into the `src` folder and open `UpdateCerts.h`.
 1. On your computer, locate `UpdateCerts.h` and paste the content into the online compiler.
-1. Now we can sign a package... We have created a simple blinky application for you.
+1. Now we can sign a package... The blinky application is already compiled.
 1. In the terminal, go to the package-signer folder and run:
 
     ```
@@ -266,7 +279,7 @@ Firmware updates have a very significant effect on the network, so we are not go
 1. Now drag the `packets.h` file from your local computer (in the local `src` folder) and drag it into the online compiler.
 1. Now hit *Compile* and flash the binary to your board.
 
-On the serial port you'll see the fragmentation session, then CRC64 validation, and then flashing the new binary.
+On the serial port you'll see the fragmentation session, then CRC64 validation, then ECDSA/SHA256 signature verification and then flashing the new binary.
 
 ## 6. And now for real
 
